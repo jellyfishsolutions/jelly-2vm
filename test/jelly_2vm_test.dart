@@ -1,9 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:jelly_2vm/jelly_2vm.dart';
+import 'package:jelly_2vm/view.dart';
 
 void main() {
-  test('', () {
-    
-  });
+  test('', () {});
 }

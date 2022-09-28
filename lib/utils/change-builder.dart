@@ -1,35 +1,52 @@
 library jelly_2vm;
 
+import 'package:flutter/material.dart';
+
 typedef WidgetBuilder<S> = Widget Function(BuildContext context, S state);
 
+/// ### ChangeBuilder: Build reactive UI
+///
+/// Pass the class of your ViewModel (or any [Listenable]), you'll be able to use a builder
+/// method that provides the [Listenable] in order to access element inside it.
+///
+/// Example of a basic usage with a ViewModel
+///
+///```
+///  @override
+///  Widget builder(BuildContext context, CounterViewModel viewModel) {
+///    [...]
+///    ChangeBuilder<CounterViewModel>(
+///      listen: counterViewModel,
+///      builder: (context, state) => Text("${state.count}")),
+///    [...]
+///  )
+///```
 class ChangeBuilder<T extends ChangeNotifier> extends StatefulWidget {
-  ChangeBuilder({Key? key, required this.watch, required this.builder})
+  const ChangeBuilder({Key? key, required this.listen, required this.builder})
       : super(key: key);
 
-  final T watch;
+  final T listen;
   final WidgetBuilder<T> builder;
-  
+
   @override
-  _ChangeBuilderState createState() => _ChangeBuilderState<T>(watch, builder);
+  _ChangeBuilderState createState() => _ChangeBuilderState<T>(listen, builder);
 }
 
 class _ChangeBuilderState<T extends ChangeNotifier>
     extends State<ChangeBuilder> {
-
   final WidgetBuilder<T> builder;
-  final T watch;
+  final T listen;
 
-  _ChangeBuilderState(this.watch, this.builder);
+  _ChangeBuilderState(this.listen, this.builder);
 
   @override
   void initState() {
-    watch.addListener(() => setState(() {}));
+    listen.addListener(() => setState(() {}));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return builder(context, watch);
+    return builder(context, listen);
   }
 }
-
