@@ -39,13 +39,25 @@ import 'package:jelly_2vm/view-model.dart';
 /// }
 /// ```
 abstract class View<T extends ViewModel> extends StatefulWidget {
-  const View({
+  View({
     Key? key,
     required this.viewModel,
   }) : super(key: key);
 
   final T viewModel;
+  BuildContext? _context;
+
   Widget builder(BuildContext context, T viewModel);
+
+  void initState(T viewModel) {}
+
+  /// Obtains (if available) the current context
+  BuildContext get context {
+    if (_context == null) {
+      throw 'Trying to access the context when is not yet initialized';
+    }
+    return _context!;
+  }
 
   @override
   State<View<T>> createState() => _ViewState<T>();
@@ -55,10 +67,17 @@ class _ViewState<T extends ViewModel> extends State<View<T>> {
   @override
   void initState() {
     super.initState();
+    widget.initState(widget.viewModel);
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.builder(context, widget.viewModel);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget._context = context;
   }
 }
