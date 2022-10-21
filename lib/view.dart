@@ -45,7 +45,7 @@ abstract class View<T extends ViewModel> extends StatefulWidget {
   }) : super(key: key);
 
   final T viewModel;
-  BuildContext? _context;
+  final _BuildContextContainer _contextContainer = _BuildContextContainer();
 
   Widget builder(BuildContext context, T viewModel);
 
@@ -53,10 +53,10 @@ abstract class View<T extends ViewModel> extends StatefulWidget {
 
   /// Obtains (if available) the current context
   BuildContext get context {
-    if (_context == null) {
+    if (_contextContainer.context == null) {
       throw 'Trying to access the context when is not yet initialized';
     }
-    return _context!;
+    return _contextContainer.context!;
   }
 
   @override
@@ -78,6 +78,10 @@ class _ViewState<T extends ViewModel> extends State<View<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget._context = context;
+    widget._contextContainer.context = context;
   }
+}
+
+class _BuildContextContainer {
+  BuildContext? context;
 }
