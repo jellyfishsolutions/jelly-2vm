@@ -78,7 +78,10 @@ class _ViewState<T extends ViewModel> extends State<View<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget._contextContainer.context = context;
+    // ignore: unnecessary_null_comparison
+    if (mounted && context != null) {
+      widget._contextContainer.context = context;
+    }
   }
 }
 
