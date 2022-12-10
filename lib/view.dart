@@ -59,14 +59,20 @@ abstract class View<T extends ViewModel> extends StatefulWidget {
     return _contextContainer.context!;
   }
 
+  TickerProviderStateMixin get vsync {
+    return _contextContainer.vsync!;
+  }
+
   @override
   State<View<T>> createState() => _ViewState<T>();
 }
 
-class _ViewState<T extends ViewModel> extends State<View<T>> {
+class _ViewState<T extends ViewModel> extends State<View<T>>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    widget._contextContainer.vsync = this;
     widget.initState(widget.viewModel);
   }
 
@@ -87,4 +93,5 @@ class _ViewState<T extends ViewModel> extends State<View<T>> {
 
 class _BuildContextContainer {
   BuildContext? context;
+  TickerProviderStateMixin? vsync;
 }
