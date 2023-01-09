@@ -10,7 +10,7 @@ abstract class View2<T extends ViewModel> extends StatefulWidget {
 
   final _BuildContextContainer _contextContainer = _BuildContextContainer();
 
-  T createView();
+  T createViewModel();
   Widget builder(BuildContext context, T viewModel);
 
   void initState(T viewModel) {}
@@ -40,7 +40,7 @@ class _ViewState2<T extends ViewModel> extends State<View2<T>>
   void initState() {
     super.initState();
     widget._contextContainer.vsync = this;
-    viewModel = widget.createView();
+    viewModel = widget.createViewModel();
     widget.initState(viewModel);
   }
 
