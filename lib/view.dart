@@ -38,6 +38,7 @@ import 'package:jelly_2vm/view-model.dart';
 ///   }
 /// }
 /// ```
+@Deprecated('Please switch to the new View2 implementation.')
 abstract class View<T extends ViewModel> extends StatefulWidget {
   View({
     Key? key,
@@ -85,8 +86,18 @@ class _ViewState<T extends ViewModel> extends State<View<T>>
   }
 
   @override
+  void didUpdateWidget(View<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (mounted && context != null) {
+      widget._contextContainer.context = context;
+      widget._contextContainer.vsync = this;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     widget._contextContainer.context = context;
+    widget._contextContainer.vsync = this;
     return widget.builder(context, widget.viewModel);
   }
 
