@@ -39,10 +39,22 @@ class _ChangeBuilderState<T extends ChangeNotifier>
 
   _ChangeBuilderState(this.listen, this.builder);
 
+  _refresh() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
-    listen.addListener(() => setState(() {}));
+    listen.addListener(_refresh);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    listen.removeListener(_refresh);
+    super.dispose();
   }
 
   @override
