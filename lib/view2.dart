@@ -47,6 +47,7 @@ class _ViewState2<T extends ViewModel> extends State<View2<T>>
   @override
   void dispose() {
     widget.dispose();
+    viewModel.dispose();
     super.dispose();
   }
 
