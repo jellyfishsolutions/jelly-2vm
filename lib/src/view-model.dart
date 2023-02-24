@@ -1,5 +1,3 @@
-library jelly_2vm;
-
 import 'package:flutter/material.dart';
 
 /// ### ViewModel: Define logic of the view here.

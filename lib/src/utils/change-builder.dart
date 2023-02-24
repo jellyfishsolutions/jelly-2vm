@@ -1,5 +1,3 @@
-library jelly_2vm;
-
 import 'package:flutter/material.dart';
 
 typedef WidgetBuilder<S> = Widget Function(BuildContext context, S state);
