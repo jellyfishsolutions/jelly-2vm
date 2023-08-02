@@ -63,15 +63,20 @@ class CounterViewModel extends ViewModel {
 
 ### Step 2
 
-Create a Counter `View` that extends `View`
+Create a Counter `View` that extends `ViewWidget`
 
 Here we will put the UI for the Counter
 
 ```dart
 // pages/counter/counter-view.dart
-class CounterView extends View<CounterViewModel> {
-  // Instanciate the Model with 0 as initial value and pass it to View
-  Counter({Key? key}) : super(key: key, viewModel: CounterViewModel(0));
+class CounterView extends ViewWidget<CounterViewModel> {
+  Counter({Key? key}) : super(key: key);
+
+  // Instantiate the Model with 0 as initial value and pass it to View
+  @override
+  CounterViewModel createViewModel() {
+    return CounterViewModel(0);
+  }
 
   @override
   Widget builder(BuildContext context, CounterViewModel counterViewModel) {
