@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../jelly_2vm.dart';
 
-abstract class View<T extends ViewModel> extends StatefulWidget {
-  View({
+abstract class ViewWidget<T extends ViewModel> extends StatefulWidget {
+  ViewWidget({
     Key? key,
   }) : super(key: key);
 
@@ -29,10 +29,10 @@ abstract class View<T extends ViewModel> extends StatefulWidget {
   }
 
   @override
-  State<View<T>> createState() => _ViewState<T>();
+  State<ViewWidget<T>> createState() => _ViewWidgetState<T>();
 }
 
-class _ViewState<T extends ViewModel> extends State<View<T>>
+class _ViewWidgetState<T extends ViewModel> extends State<ViewWidget<T>>
     with TickerProviderStateMixin {
   late T viewModel;
   @override
@@ -51,7 +51,7 @@ class _ViewState<T extends ViewModel> extends State<View<T>>
   }
 
   @override
-  void didUpdateWidget(View<T> oldWidget) {
+  void didUpdateWidget(ViewWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (mounted && context != null) {
       widget._contextContainer.context = context;
