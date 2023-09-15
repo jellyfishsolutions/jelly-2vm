@@ -24,3 +24,32 @@ import 'package:flutter/material.dart';
 ///}
 ///```
 class ViewModel extends ChangeNotifier {}
+
+class ViewModelDelegator<T> {
+  final List<T> _delegates = [];
+
+  void addDelegate(T delegate) {
+    if (_delegates.contains(delegate)) {
+      return;
+    }
+    _delegates.add(delegate);
+  }
+
+  void notifyDelegates(Function(T delegate) exec) {
+    for (final d in _delegates) {
+      try {
+        exec(d);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+  }
+
+  void removeDelegate(T delegate) {
+    _delegates.remove(delegate);
+  }
+
+  void removeAllDelegates() {
+    _delegates.clear();
+  }
+}

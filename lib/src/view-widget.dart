@@ -14,7 +14,7 @@ abstract class ViewWidget<T extends ViewModel> extends StatefulWidget {
 
   void initState(T viewModel) {}
 
-  void dispose() {}
+  void dispose(T viewModel) {}
 
   /// Obtains (if available) the current context
   BuildContext get context {
@@ -45,7 +45,7 @@ class _ViewWidgetState<T extends ViewModel> extends State<ViewWidget<T>>
 
   @override
   void dispose() {
-    widget.dispose();
+    widget.dispose(viewModel);
     viewModel.dispose();
     super.dispose();
   }
