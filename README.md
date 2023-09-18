@@ -143,3 +143,56 @@ ChangeBuilder<CounterStateManager>(
   builder: (context, state) => Text("${state.count}"),
 )
 ```
+
+### Delegator 🐊
+
+Inspired by Swift for iOS, it will help you to dispatch functions that will run on the View from your ViewModel.
+
+**View**
+
+```dart
+// Create View specific delegate
+abstract class Delegate1 {
+  onApiError(Object? e);
+}
+
+// Create union of multiple delegates, since dart doesn't allow implicit union when using dynamics
+abstract class CounterViewDelegates implements Delegate1, Delegate2 {}
+
+// Implement the delegate(s)
+class CounterView extends ViewModel<CounterViewModel> implements CounterViewDelegates{
+  ...
+  @override
+  TeamBuilderViewModel createViewModel() {
+    // Pass delegate (the View itself) to ViewModel
+    return TeamBuilderViewModel(delegate: this);
+  }
+
+  // Implement all the methods from the delegates
+  @override
+  onApiError(Object? e){
+    // Handle Api Error
+  }
+  ...
+}
+```
+
+**ViewModel**
+
+```dart
+// Use the ViewModelDelegator giving the (union of) delegates from the View
+class CounterViewModel extends ViewModel with ViewModelDelegator<CounterViewDelegates>{
+  // Add delegate when instantiated
+  CounterViewModel({required CounterViewDelegates delegate}){
+    addDelegate(delegate);
+  }
+  ...
+  try{
+    ...
+  } catch(e){
+    // Call the delegate(s) with the specific action
+    delegateAction((delegate) => delegate.onApiError(e));
+  }
+  ...
+}
+```
