@@ -19,7 +19,7 @@ typedef WidgetBuilder<S> = Widget Function(BuildContext context, S state);
 ///    [...]
 ///  )
 ///```
-class ChangeBuilder<T extends ChangeNotifier> extends StatefulWidget {
+class ChangeBuilder<T extends ChangeNotifier> extends StatelessWidget {
   const ChangeBuilder({Key? key, required this.listen, required this.builder})
       : super(key: key);
 
@@ -27,36 +27,11 @@ class ChangeBuilder<T extends ChangeNotifier> extends StatefulWidget {
   final WidgetBuilder<T> builder;
 
   @override
-  _ChangeBuilderState createState() => _ChangeBuilderState<T>(listen, builder);
-}
-
-class _ChangeBuilderState<T extends ChangeNotifier>
-    extends State<ChangeBuilder> {
-  final WidgetBuilder<T> builder;
-  final T listen;
-
-  _ChangeBuilderState(this.listen, this.builder);
-
-  _refresh() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  @override
-  void initState() {
-    listen.addListener(_refresh);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    listen.removeListener(_refresh);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return builder(context, listen);
+    return ListenableBuilder(
+        listenable: listen,
+        builder: (BuildContext context, Widget? child) {
+          return builder(context, listen);
+        });
   }
 }
