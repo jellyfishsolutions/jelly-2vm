@@ -46,7 +46,7 @@ import 'package:flutter/foundation.dart';
 ///   ...
 /// }
 /// ```
-class ViewModelDelegator<T> {
+mixin ViewModelDelegator<T> {
   final List<T> _delegates = [];
 
   void addDelegate(T delegate) {
