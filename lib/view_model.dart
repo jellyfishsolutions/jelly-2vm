@@ -1,6 +1,3 @@
-@Deprecated(
-  'This file will be removed, "use package:jelly_2vm/view_model.dart"',
-)
 library jelly_2vm;
 
 export 'src/view_model/view_model.dart' show ViewModel;

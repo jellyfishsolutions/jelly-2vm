@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../jelly_2vm.dart';
+import '../../jelly_2vm.dart';
 
 abstract class ViewWidget<T extends ViewModel> extends StatefulWidget {
   ViewWidget({
@@ -53,7 +53,7 @@ class _ViewWidgetState<T extends ViewModel> extends State<ViewWidget<T>>
   @override
   void didUpdateWidget(ViewWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (mounted && context != null) {
+    if (mounted && context == null) {
       widget._contextContainer.context = context;
       widget._contextContainer.vsync = this;
     }
