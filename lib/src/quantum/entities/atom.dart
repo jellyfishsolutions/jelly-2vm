@@ -31,6 +31,8 @@ class Atom<T> extends Quantum<T> {
         _value = value;
         initialized = true;
         notifyListeners();
+      }).catchError((e) {
+        persistentStorageInterface!.onGetError(e, _value);
       });
     }
   }
