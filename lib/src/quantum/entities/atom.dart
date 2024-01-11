@@ -14,14 +14,22 @@ class Atom<T> extends Quantum<T> {
 
   T _value;
 
+  /// [true] if the Atom has successfully retrieved data from persistent storage, or immediately if it doesn't have one
+  bool initialized = false;
+
   final AtomPersistentStorageInterface<T>? persistentStorageInterface;
 
   void _initPersistency() async {
-    if (persistentStorageInterface == null) return;
+    if (persistentStorageInterface == null) {
+      initialized = true;
+      notifyListeners();
+      return;
+    }
 
     if (persistentStorageInterface!.initialValueFromStorage) {
       persistentStorageInterface!.get().then((value) {
         _value = value;
+        initialized = true;
         notifyListeners();
       });
     }
