@@ -8,32 +8,37 @@ class Atom<T> extends Quantum<T> {
   Atom(
     T initialValue, {
     this.persistentStorageInterface,
-  }) : _value = initialValue {
+  })  : _value = initialValue,
+        _initialized = persistentStorageInterface == null {
     _initPersistency();
   }
 
   T _value;
 
   /// [true] if the Atom has successfully retrieved data from persistent storage, or immediately if it doesn't have one
-  bool initialized = false;
+  bool _initialized;
+  bool get initialized => _initialized;
 
   final AtomPersistentStorageInterface<T>? persistentStorageInterface;
 
-  void _initPersistency() async {
-    if (persistentStorageInterface == null) {
-      initialized = true;
-      notifyListeners();
-      return;
-    }
+  Future<void> _initPersistency() async {
+    if (persistentStorageInterface == null) return;
 
     if (persistentStorageInterface!.initialValueFromStorage) {
-      persistentStorageInterface!.get().then((value) {
-        _value = value;
-        initialized = true;
+      try {
+        final v = await persistentStorageInterface!.get();
+
+        _value = v;
+        _initialized = true;
         notifyListeners();
-      }).catchError((e) {
+
+        return;
+      } catch (e) {
         persistentStorageInterface!.onGetError(e, _value);
-      });
+        _initialized = true;
+        notifyListeners();
+        return;
+      }
     }
   }
 
