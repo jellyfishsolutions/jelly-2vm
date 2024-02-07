@@ -55,4 +55,6 @@ class Atom<T> extends Quantum<T> {
 
     notifyListeners();
   }
+
+  bool get isNull => _value == null;
 }
