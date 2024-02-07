@@ -1,6 +1,6 @@
 name: jelly_2vm
 description: Simple and lightweight library to implement view-viewModel-service in Flutter
-version: 0.6.6
+version: 0.6.7
 homepage: https://github.com/jellyfishsolutions/jelly-2vm
 
 environment:
