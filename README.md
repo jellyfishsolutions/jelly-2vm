@@ -63,7 +63,7 @@ class CounterViewModel extends ViewModel {
 
 ### Step 2
 
-Create a Counter `View` that extends `ViewWidget`
+Create a Counter `View` that extends `ViewWidget` or `ImmutableViewWidget` (if you don't need the context or vsync and want to make the view const)
 
 Here we will put the UI for the Counter
 
