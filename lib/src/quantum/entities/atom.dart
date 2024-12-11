@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:jelly_2vm/src/quantum/interfaces/persistent_storage_interface.dart';
 import 'package:jelly_2vm/src/quantum/interfaces/quantum_interface.dart';
 
@@ -5,11 +7,19 @@ import 'package:jelly_2vm/src/quantum/interfaces/quantum_interface.dart';
 ///
 /// You can listen to its changes using `.addListener()`
 class Atom<T> extends Quantum<T> {
-  Atom(
+  Atom(T initialValue)
+      : _value = initialValue,
+        _initialized = true,
+        _persistentStorageInterface = null,
+        _initializedCompleter = null;
+
+  Atom.persisted(
     T initialValue, {
-    this.persistentStorageInterface,
-  })  : _value = initialValue,
-        _initialized = persistentStorageInterface == null {
+    required AtomPersistentStorageInterface<T> persistentStorageInterface,
+  })  : _persistentStorageInterface = persistentStorageInterface,
+        _value = initialValue,
+        _initialized = false,
+        _initializedCompleter = Completer() {
     _initPersistency();
   }
 
@@ -19,28 +29,39 @@ class Atom<T> extends Quantum<T> {
   bool _initialized;
   bool get initialized => _initialized;
 
-  final AtomPersistentStorageInterface<T>? persistentStorageInterface;
+  // Persistency
+
+  final AtomPersistentStorageInterface<T>? _persistentStorageInterface;
+
+  final Completer<void>? _initializedCompleter;
+
+  /// Only for [Atom.persisted]
+  late final Future<void> initializedAsFuture = _initializedCompleter!.future;
 
   Future<void> _initPersistency() async {
-    if (persistentStorageInterface == null) return;
+    if (_persistentStorageInterface == null) return;
 
-    if (persistentStorageInterface!.initialValueFromStorage) {
+    if (_persistentStorageInterface!.initialValueFromStorage) {
       try {
-        final v = await persistentStorageInterface!.get();
+        final v = await _persistentStorageInterface!.get();
 
         _value = v;
         _initialized = true;
+        _initializedCompleter!.complete();
         notifyListeners();
 
         return;
       } catch (e) {
-        persistentStorageInterface!.onGetError(e, _value);
+        _persistentStorageInterface!.onGetError(e, _value);
         _initialized = true;
+        _initializedCompleter!.complete();
         notifyListeners();
         return;
       }
     }
   }
+
+  // Getters/Setters
 
   @override
   T get value => _value;
@@ -48,10 +69,10 @@ class Atom<T> extends Quantum<T> {
   set value(T v) {
     _value = v;
 
-    persistentStorageInterface
+    _persistentStorageInterface
         ?.save(v)
-        .then(persistentStorageInterface!.onSaveSuccess)
-        .catchError(persistentStorageInterface!.onSaveError);
+        .then(_persistentStorageInterface!.onSaveSuccess)
+        .catchError(_persistentStorageInterface!.onSaveError);
 
     notifyListeners();
   }

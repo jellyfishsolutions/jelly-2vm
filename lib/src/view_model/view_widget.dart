@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../jelly_2vm.dart';
+import 'package:jelly_2vm/view_model.dart';
 
 abstract class ViewWidget<T extends ViewModel> extends StatefulWidget {
   ViewWidget({

@@ -196,3 +196,64 @@ class CounterViewModel extends ViewModel with ViewModelDelegator<CounterViewDele
   ...
 }
 ```
+
+## Quantum ⚛️
+
+Quantum is a value that can change over time and notify its listeners when it changes.
+
+### Why
+
+Sometimes having a state of the whole page can lead to performance issues, for this reason you can use a Quantum to represent the state of a specific part of the page. Using then the QuantumBuilder you can make the part reactive.
+
+### How
+
+Let's take as an example a simple counter:
+
+** View **
+
+```dart
+class CounterView extends ViewWidget<CounterViewModel> {
+  const CounterView({super.key});
+  
+  @override
+  HomeViewModel createViewModel() {
+    return HomeViewModel(delegate: this);
+  }
+
+  @override
+  Widget build(BuildContext context, CounterViewModel viewModel) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            QuantumBuilder<int>(
+              quantum: viewModel.counter,
+              builder: (context, value) {
+                return Text('$value');
+              },
+            ),
+            ElevatedButton(
+              onPressed: viewModel.increment,
+              child: const Text('Increment'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+** ViewModel **
+
+```dart
+class CounterViewModel extends ViewModel {
+  final Quantum<int> counter = Quantum<int>(0);
+
+  void increment() {
+    counter.value++;
+  }
+}
+```
+
+For more examples, see the [docs](https://github.com/jelly-dart/jelly_2vm/blob/main/docs/en/quantums.md).
